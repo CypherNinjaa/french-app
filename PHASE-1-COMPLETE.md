@@ -71,11 +71,23 @@ src/
 
 ### 1. Environment Configuration
 
+**⚠️ SECURITY NOTICE**: Never commit actual API keys to version control!
+
+1. Copy `.env.example` to `.env`:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Fill in your actual API keys in `.env`:
+
 ```env
-VITE_SUPABASE_URL=https://fctkfxnwboarpinsqqvw.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-VITE_GROQ_API_KEY=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
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_GROQ_API_KEY=your_groq_api_key
 ```
+
+3. The `.env` file is already in `.gitignore` to prevent accidental commits.
 
 ### 2. Database Setup
 

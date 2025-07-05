@@ -65,13 +65,23 @@ npm install
 
 ### 2. Environment Setup
 
-The `.env` file is already configured with working Supabase credentials:
+**⚠️ SECURITY NOTICE**: Never commit actual API keys to version control!
+
+1. Copy `.env.example` to `.env`:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Fill in your actual values in the `.env` file:
 
 ```env
-VITE_SUPABASE_URL=https://fctkfxnwboarpinsqqvw.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjdGtmeG53Ym9hcnBpbnNxcXZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2OTA5MDAsImV4cCI6MjA2NzI2NjkwMH0.adl9p3Bev9gOZSaLKtasuJiCZj7wTLFHosd7IB1Z0lM
-VITE_GROQ_API_KEY=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
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_GROQ_API_KEY=your_groq_api_key
 ```
+
+3. The `.env` file is already in `.gitignore` to prevent accidental commits.
 
 ### 3. Database Setup
 
