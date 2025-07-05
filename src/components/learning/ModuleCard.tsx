@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import type { ModuleWithProgress } from "@/types";
 import {
 	Card,
@@ -18,6 +19,8 @@ interface ModuleCardProps {
 }
 
 export function ModuleCard({ module }: ModuleCardProps) {
+	const navigate = useNavigate();
+
 	const getStatusBadge = () => {
 		if (module.isLocked) {
 			return (
@@ -126,6 +129,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
 						className="w-full"
 						disabled={module.isLocked}
 						variant={module.progressPercentage === 100 ? "outline" : "default"}
+						onClick={() => navigate(`/learn/modules/${module.id}`)}
 					>
 						{module.isLocked
 							? "Locked"

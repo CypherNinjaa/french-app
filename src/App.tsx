@@ -13,6 +13,8 @@ import { useAuth } from "./hooks/useAuth";
 import { AuthPage } from "./components/auth/AuthPage";
 import { ProfilePage } from "./components/profile/ProfilePage";
 import { LearningDashboard } from "./components/learning/LearningDashboard";
+import { ModuleDetailPage } from "./components/learning/ModuleDetailPage";
+import { LessonPlayer } from "./components/learning/LessonPlayer";
 import { Layout } from "./components/layout/Layout";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import "./index.css";
@@ -78,6 +80,26 @@ function AppContent() {
 					<ProtectedRoute>
 						<Layout>
 							<ProfilePage />
+						</Layout>
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/learn/modules/:moduleId"
+				element={
+					<ProtectedRoute>
+						<Layout>
+							<ModuleDetailPage />
+						</Layout>
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/learn/modules/:moduleId/lessons/:lessonId"
+				element={
+					<ProtectedRoute>
+						<Layout>
+							<LessonPlayer />
 						</Layout>
 					</ProtectedRoute>
 				}

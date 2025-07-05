@@ -1,5 +1,10 @@
 import { motion } from "framer-motion";
 import { useModulesWithProgress, useLearningStats } from "@/hooks/useModules";
+import { useAuth } from "@/hooks/useAuth";
+import {
+	initializeSampleData,
+	initializeUserProgress,
+} from "@/utils/initSampleData";
 import {
 	Card,
 	CardContent,
@@ -9,17 +14,35 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Clock, Target, Zap, TrendingUp } from "lucide-react";
+import {
+	BookOpen,
+	Clock,
+	Target,
+	Zap,
+	TrendingUp,
+	Database,
+} from "lucide-react";
 import { ModuleCard } from "@/components/learning/ModuleCard";
 import { LearningStatsCard } from "@/components/learning/LearningStatsCard";
 
 export function LearningDashboard() {
+	const { user } = useAuth();
 	const {
 		data: modules,
 		isLoading: modulesLoading,
 		error: modulesError,
+		refetch: refetchModules,
 	} = useModulesWithProgress();
 	const { data: stats, isLoading: statsLoading } = useLearningStats();
+
+	const handleInitializeSampleData = async () => {
+		console.log("Initializing sample data...");
+		const result = await initializeSampleData();
+		if (result.success && user?.id) {
+			await initializeUserProgress(user.id);
+			refetchModules(); // Refresh the modules after initialization
+		}
+	};
 
 	if (modulesLoading || statsLoading) {
 		return (
@@ -171,9 +194,14 @@ export function LearningDashboard() {
 							<h3 className="text-xl font-semibold mb-2">
 								No modules available
 							</h3>
-							<p className="text-muted-foreground">
-								Learning content will be available soon. Check back later!
+							<p className="text-muted-foreground mb-6">
+								Learning content will be available soon. For testing Phase 3,
+								you can initialize sample data.
 							</p>
+							<Button onClick={handleInitializeSampleData} variant="outline">
+								<Database className="w-4 h-4 mr-2" />
+								Initialize Sample Data
+							</Button>
 						</motion.div>
 					)}
 				</motion.div>

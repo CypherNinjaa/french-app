@@ -58,10 +58,10 @@ export interface UserProgress {
 	id: string;
 	user_id: string;
 	module_id: string;
-	lesson_id: string | null;
 	status: "locked" | "unlocked" | "in_progress" | "completed";
 	progress_percentage: number;
-	time_spent_minutes: number;
+	completed_lessons: number;
+	total_lessons: number;
 	last_accessed: string | null;
 	completed_at: string | null;
 	created_at: string;
