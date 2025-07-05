@@ -1,10 +1,35 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { User, Settings, BookOpen, LogOut, Edit2, Save, X } from "lucide-react";
+import {
+	User,
+	Settings,
+	BookOpen,
+	Edit2,
+	Save,
+	X,
+	Mail,
+	Calendar,
+	Target,
+} from "lucide-react";
 import type { Profile } from "../../lib/supabase";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function ProfilePage() {
-	const { user, profile, signOut, updateProfile, loading } = useAuth();
+	const { user, profile, updateProfile, loading } = useAuth();
 	const [isEditing, setIsEditing] = useState(false);
 	const [editForm, setEditForm] = useState({
 		full_name: profile?.full_name || "",
@@ -38,316 +63,362 @@ export function ProfilePage() {
 		setIsEditing(false);
 	};
 
+	const getInitials = (name: string) => {
+		return name
+			.split(" ")
+			.map((n) => n[0])
+			.join("")
+			.toUpperCase();
+	};
+
+	const getLevelColor = (level: string) => {
+		switch (level) {
+			case "beginner":
+				return "bg-green-100 text-green-800 border-green-200";
+			case "intermediate":
+				return "bg-yellow-100 text-yellow-800 border-yellow-200";
+			case "advanced":
+				return "bg-red-100 text-red-800 border-red-200";
+			default:
+				return "bg-gray-100 text-gray-800 border-gray-200";
+		}
+	};
+
 	if (!user || !profile) {
 		return (
-			<div className="d-flex align-items-center justify-content-center min-vh-100">
-				<div className="text-center">
-					<div
-						className="spinner-border text-primary"
-						style={{ width: "4rem", height: "4rem" }}
-						role="status"
-					>
-						<span className="visually-hidden">Loading...</span>
-					</div>
-					<p className="mt-3 text-muted">Loading profile...</p>
-				</div>
+			<div className="flex items-center justify-center min-h-[50vh]">
+				<Card className="w-96">
+					<CardContent className="pt-6">
+						<div className="flex flex-col items-center space-y-4">
+							<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+							<p className="text-sm text-muted-foreground">
+								Loading your profile...
+							</p>
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 		);
 	}
 
 	return (
-		<div className="min-vh-100">
-			{/* Header */}
-			<header className="bg-white shadow-sm">
-				<div className="container-fluid">
-					<div className="d-flex justify-content-between align-items-center py-3">
-						<div className="d-flex align-items-center">
-							<BookOpen
-								className="text-primary me-3"
-								style={{ width: "32px", height: "32px" }}
-							/>
-							<h1 className="h3 mb-0 fw-bold">FrenchMaster</h1>
-						</div>
-						<button
-							onClick={signOut}
-							className="btn btn-outline-secondary d-flex align-items-center"
-							disabled={loading}
-						>
-							<LogOut
-								className="me-2"
-								style={{ width: "16px", height: "16px" }}
-							/>
-							Sign Out
-						</button>
-					</div>
-				</div>
-			</header>
-
+		<div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-[calc(100vh-4rem)]">
 			{/* Main Content */}
-			<main className="container py-4">
-				{/* Profile Card */}
-				<div className="card mb-4">
-					<div className="card-body">
-						<div className="d-flex justify-content-between align-items-center mb-4">
-							<div className="d-flex align-items-center">
-								<div className="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
-									<User
-										className="text-primary"
-										style={{ width: "32px", height: "32px" }}
-									/>
+			<div className="container mx-auto px-4 py-8 max-w-6xl">
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+					{/* Left Column - Profile Info */}
+					<div className="lg:col-span-2 space-y-6">
+						{/* Profile Card */}
+						<Card className="relative overflow-hidden">
+							<div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 h-32"></div>
+							<CardContent className="relative pt-16 pb-6">
+								<div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+									<Avatar className="w-24 h-24 border-4 border-white shadow-lg">
+										<AvatarImage src={user.user_metadata?.avatar_url} />
+										<AvatarFallback className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-bold">
+											{getInitials(profile.full_name || user.email || "U")}
+										</AvatarFallback>
+									</Avatar>
+									<div className="flex-1 space-y-2">
+										<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+											<div>
+												<h2 className="text-2xl font-bold text-gray-900">
+													{profile.full_name || "Welcome!"}
+												</h2>
+												<div className="flex items-center gap-2 text-sm text-muted-foreground">
+													<Mail className="w-4 h-4" />
+													{user.email}
+												</div>
+											</div>
+											<Button
+												variant={isEditing ? "outline" : "default"}
+												onClick={() => setIsEditing(!isEditing)}
+												disabled={loading}
+												className="gap-2 shrink-0"
+											>
+												{isEditing ? (
+													<>
+														<X className="w-4 h-4" />
+														Cancel
+													</>
+												) : (
+													<>
+														<Edit2 className="w-4 h-4" />
+														Edit Profile
+													</>
+												)}
+											</Button>
+										</div>
+										<div className="flex flex-wrap items-center gap-3">
+											<Badge
+												variant="secondary"
+												className={getLevelColor(profile.learning_level)}
+											>
+												<Target className="w-3 h-3 mr-1" />
+												{profile.learning_level.charAt(0).toUpperCase() +
+													profile.learning_level.slice(1)}
+											</Badge>
+											<div className="flex items-center gap-1 text-sm text-muted-foreground">
+												<Calendar className="w-4 h-4" />
+												Joined{" "}
+												{new Date(profile.created_at).toLocaleDateString(
+													"en-US",
+													{
+														month: "long",
+														year: "numeric",
+													}
+												)}
+											</div>
+										</div>
+									</div>
 								</div>
-								<div>
-									<h2 className="h4 mb-1">{profile.full_name || "User"}</h2>
-									<p className="text-muted mb-0">{user.email}</p>
-								</div>
-							</div>
-							<button
-								onClick={() => setIsEditing(!isEditing)}
-								className="btn btn-outline-secondary d-flex align-items-center"
-								disabled={loading}
-							>
-								{isEditing ? (
-									<>
-										<X
-											className="me-2"
-											style={{ width: "16px", height: "16px" }}
-										/>
-										Cancel
-									</>
-								) : (
-									<>
-										<Edit2
-											className="me-2"
-											style={{ width: "16px", height: "16px" }}
-										/>
-										Edit Profile
-									</>
-								)}
-							</button>
-						</div>
+							</CardContent>
+						</Card>
 
+						{/* Edit Form */}
 						{isEditing ? (
-							<form>
-								<div className="mb-3">
-									<label className="form-label fw-medium">Full Name</label>
-									<input
-										type="text"
-										value={editForm.full_name}
-										onChange={(e) =>
-											setEditForm((prev) => ({
-												...prev,
-												full_name: e.target.value,
-											}))
-										}
-										className="form-control"
-										placeholder="Enter your full name"
-									/>
-								</div>
-
-								<div className="mb-3">
-									<label className="form-label fw-medium">Learning Level</label>
-									<select
-										value={editForm.learning_level}
-										onChange={(e) =>
-											setEditForm((prev) => ({
-												...prev,
-												learning_level: e.target.value as
-													| "beginner"
-													| "intermediate"
-													| "advanced",
-											}))
-										}
-										className="form-select"
-									>
-										<option value="beginner">Beginner</option>
-										<option value="intermediate">Intermediate</option>
-										<option value="advanced">Advanced</option>
-									</select>
-								</div>
-
-								<div className="mb-4">
-									<h3 className="h5 mb-3">Preferences</h3>
-
-									<div className="d-flex justify-content-between align-items-center mb-3">
-										<span className="text-muted">Email Notifications</span>
-										<div className="form-check form-switch">
-											<input
-												className="form-check-input"
-												type="checkbox"
-												checked={editForm.preferences.notifications}
-												onChange={(e) =>
+							<Card className="mt-6">
+								<CardContent className="pt-6">
+									<div className="space-y-6">
+										<div className="space-y-2">
+											<Label htmlFor="fullName" className="text-sm font-medium">
+												Full Name
+											</Label>
+											<Input
+												id="fullName"
+												value={editForm.full_name}
+												onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 													setEditForm((prev) => ({
 														...prev,
-														preferences: {
-															...prev.preferences,
-															notifications: e.target.checked,
-														},
+														full_name: e.target.value,
 													}))
 												}
+												placeholder="Enter your full name"
+												className="w-full"
 											/>
+										</div>
+
+										<div className="space-y-2">
+											<Label
+												htmlFor="learningLevel"
+												className="text-sm font-medium"
+											>
+												Learning Level
+											</Label>
+											<Select
+												value={editForm.learning_level}
+												onValueChange={(value: string) =>
+													setEditForm((prev) => ({
+														...prev,
+														learning_level: value as
+															| "beginner"
+															| "intermediate"
+															| "advanced",
+													}))
+												}
+											>
+												<SelectTrigger>
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="beginner">🌱 Beginner</SelectItem>
+													<SelectItem value="intermediate">
+														🚀 Intermediate
+													</SelectItem>
+													<SelectItem value="advanced">⭐ Advanced</SelectItem>
+												</SelectContent>
+											</Select>
+										</div>
+
+										<Separator />
+
+										<div className="space-y-4">
+											<h3 className="text-lg font-semibold">Preferences</h3>
+
+											<div className="flex items-center justify-between">
+												<div className="space-y-0.5">
+													<Label className="text-sm font-medium">
+														Email Notifications
+													</Label>
+													<p className="text-xs text-muted-foreground">
+														Receive updates about your learning progress
+													</p>
+												</div>
+												<Switch
+													checked={editForm.preferences.notifications}
+													onCheckedChange={(checked: boolean) =>
+														setEditForm((prev) => ({
+															...prev,
+															preferences: {
+																...prev.preferences,
+																notifications: checked,
+															},
+														}))
+													}
+												/>
+											</div>
+
+											<div className="space-y-2">
+												<Label htmlFor="theme" className="text-sm font-medium">
+													Theme
+												</Label>
+												<Select
+													value={editForm.preferences.theme}
+													onValueChange={(value: string) =>
+														setEditForm((prev) => ({
+															...prev,
+															preferences: {
+																...prev.preferences,
+																theme: value as "light" | "dark",
+															},
+														}))
+													}
+												>
+													<SelectTrigger>
+														<SelectValue />
+													</SelectTrigger>
+													<SelectContent>
+														<SelectItem value="light">☀️ Light</SelectItem>
+														<SelectItem value="dark">🌙 Dark</SelectItem>
+													</SelectContent>
+												</Select>
+											</div>
+										</div>
+
+										<div className="flex justify-end gap-3 pt-4">
+											<Button
+												variant="outline"
+												onClick={handleCancel}
+												disabled={loading}
+											>
+												Cancel
+											</Button>
+											<Button
+												onClick={handleSave}
+												disabled={loading}
+												className="gap-2"
+											>
+												<Save className="w-4 h-4" />
+												{loading ? "Saving..." : "Save Changes"}
+											</Button>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+						) : null}
+					</div>
+
+					{/* Right Column - Stats */}
+					<div className="space-y-6">
+						{/* Quick Stats */}
+						<Card>
+							<CardContent className="p-6">
+								<h3 className="text-lg font-semibold mb-4">
+									Learning Progress
+								</h3>
+								<div className="space-y-4">
+									<div className="flex items-center justify-between">
+										<div className="flex items-center gap-3">
+											<div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+												<BookOpen className="w-5 h-5 text-blue-600" />
+											</div>
+											<div>
+												<p className="font-medium text-sm">Lessons</p>
+												<p className="text-xs text-muted-foreground">
+													Completed
+												</p>
+											</div>
+										</div>
+										<div className="text-right">
+											<p className="text-2xl font-bold text-blue-600">0</p>
+											<p className="text-xs text-muted-foreground">Total</p>
 										</div>
 									</div>
 
-									<div className="mb-3">
-										<label className="form-label fw-medium">Theme</label>
-										<select
-											value={editForm.preferences.theme}
-											onChange={(e) =>
-												setEditForm((prev) => ({
-													...prev,
-													preferences: {
-														...prev.preferences,
-														theme: e.target.value as "light" | "dark",
-													},
-												}))
-											}
-											className="form-select"
-										>
-											<option value="light">Light</option>
-											<option value="dark">Dark</option>
-										</select>
+									<div className="flex items-center justify-between">
+										<div className="flex items-center gap-3">
+											<div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+												<Settings className="w-5 h-5 text-green-600" />
+											</div>
+											<div>
+												<p className="font-medium text-sm">Vocabulary</p>
+												<p className="text-xs text-muted-foreground">
+													Words learned
+												</p>
+											</div>
+										</div>
+										<div className="text-right">
+											<p className="text-2xl font-bold text-green-600">0</p>
+											<p className="text-xs text-muted-foreground">Words</p>
+										</div>
 									</div>
-								</div>
 
-								<div className="d-flex justify-content-end gap-2">
-									<button
-										type="button"
-										onClick={handleCancel}
-										className="btn btn-secondary"
-										disabled={loading}
-									>
-										Cancel
-									</button>
-									<button
-										type="button"
-										onClick={handleSave}
-										className="btn btn-primary d-flex align-items-center"
-										disabled={loading}
-									>
-										<Save
-											className="me-2"
-											style={{ width: "16px", height: "16px" }}
-										/>
-										{loading ? (
-											<>
-												<span
-													className="spinner-border spinner-border-sm me-2"
-													role="status"
-													aria-hidden="true"
-												></span>
-												Saving...
-											</>
-										) : (
-											"Save Changes"
-										)}
-									</button>
-								</div>
-							</form>
-						) : (
-							<div>
-								<div className="row mb-4">
-									<div className="col-md-6">
-										<h6 className="text-muted small">Learning Level</h6>
-										<p className="h5 text-capitalize">
-											{profile.learning_level}
-										</p>
-									</div>
-									<div className="col-md-6">
-										<h6 className="text-muted small">Member Since</h6>
-										<p className="h5">
-											{new Date(profile.created_at).toLocaleDateString()}
-										</p>
+									<div className="flex items-center justify-between">
+										<div className="flex items-center gap-3">
+											<div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+												<Target className="w-5 h-5 text-orange-600" />
+											</div>
+											<div>
+												<p className="font-medium text-sm">Streak</p>
+												<p className="text-xs text-muted-foreground">
+													Days in a row
+												</p>
+											</div>
+										</div>
+										<div className="text-right">
+											<p className="text-2xl font-bold text-orange-600">0</p>
+											<p className="text-xs text-muted-foreground">Days</p>
+										</div>
 									</div>
 								</div>
+							</CardContent>
+						</Card>
 
-								<div>
-									<h3 className="h5 mb-3">Preferences</h3>
-									<div className="d-flex justify-content-between align-items-center mb-2">
-										<span>Email Notifications</span>
-										<span
-											className={`badge ${
-												profile.preferences?.notifications
-													? "bg-success"
-													: "bg-secondary"
-											}`}
-										>
-											{profile.preferences?.notifications
-												? "Enabled"
-												: "Disabled"}
-										</span>
-									</div>
-									<div className="d-flex justify-content-between align-items-center">
-										<span>Theme</span>
-										<span className="text-capitalize fw-medium">
-											{profile.preferences?.theme || "Light"}
-										</span>
-									</div>
+						{/* Quick Actions */}
+						<Card>
+							<CardContent className="p-6">
+								<h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+								<div className="space-y-3">
+									<Button
+										variant="outline"
+										className="w-full justify-start gap-3"
+										asChild
+									>
+										<a href="/learn">
+											<BookOpen className="w-4 h-4" />
+											Continue Learning
+										</a>
+									</Button>
+									<Button
+										variant="outline"
+										className="w-full justify-start gap-3"
+									>
+										<Settings className="w-4 h-4" />
+										Settings
+									</Button>
 								</div>
-							</div>
-						)}
+							</CardContent>
+						</Card>
+
+						{/* Achievement Preview */}
+						<Card>
+							<CardContent className="p-6">
+								<h3 className="text-lg font-semibold mb-4">
+									Recent Achievements
+								</h3>
+								<div className="text-center py-8">
+									<div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+										<User className="w-8 h-8 text-gray-400" />
+									</div>
+									<p className="text-sm text-muted-foreground">
+										Complete your first lesson to earn achievements!
+									</p>
+								</div>
+							</CardContent>
+						</Card>
 					</div>
 				</div>
-
-				{/* Quick Stats */}
-				<div className="row g-3">
-					<div className="col-md-4">
-						<div className="card text-center">
-							<div className="card-body">
-								<div
-									className="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-									style={{ width: "48px", height: "48px" }}
-								>
-									<BookOpen
-										className="text-primary"
-										style={{ width: "24px", height: "24px" }}
-									/>
-								</div>
-								<h5 className="card-title">Lessons Completed</h5>
-								<p className="display-6 fw-bold text-primary">0</p>
-								<p className="text-muted small">Start your first lesson!</p>
-							</div>
-						</div>
-					</div>
-
-					<div className="col-md-4">
-						<div className="card text-center">
-							<div className="card-body">
-								<div
-									className="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-									style={{ width: "48px", height: "48px" }}
-								>
-									<Settings
-										className="text-success"
-										style={{ width: "24px", height: "24px" }}
-									/>
-								</div>
-								<h5 className="card-title">Words Learned</h5>
-								<p className="display-6 fw-bold text-success">0</p>
-								<p className="text-muted small">Build your vocabulary!</p>
-							</div>
-						</div>
-					</div>
-
-					<div className="col-md-4">
-						<div className="card text-center">
-							<div className="card-body">
-								<div
-									className="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-									style={{ width: "48px", height: "48px" }}
-								>
-									<User
-										className="text-info"
-										style={{ width: "24px", height: "24px" }}
-									/>
-								</div>
-								<h5 className="card-title">Streak</h5>
-								<p className="display-6 fw-bold text-info">0</p>
-								<p className="text-muted small">days in a row</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</main>
+			</div>
 		</div>
 	);
 }

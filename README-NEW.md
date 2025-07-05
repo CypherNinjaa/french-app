@@ -11,13 +11,16 @@ A modern, interactive French learning platform built with React, TypeScript, and
 ## 🎯 Features
 
 ### ✅ Completed Features
+
 - **Modern Authentication System**
+
   - Email/password login and registration
   - Google OAuth integration
   - User profile management
   - Secure session handling
 
 - **Modern UI/UX**
+
   - shadcn/ui component library
   - Tailwind CSS styling
   - Framer Motion animations
@@ -25,6 +28,7 @@ A modern, interactive French learning platform built with React, TypeScript, and
   - Dark mode support
 
 - **Learning Dashboard**
+
   - Module progress tracking
   - Learning statistics
   - Interactive module cards
@@ -37,6 +41,7 @@ A modern, interactive French learning platform built with React, TypeScript, and
   - Error handling with retries
 
 ### 🚧 Upcoming Features (Stage 3)
+
 - Interactive lesson content
 - Vocabulary flashcards
 - Assessment system
@@ -48,6 +53,7 @@ A modern, interactive French learning platform built with React, TypeScript, and
 ## 🛠 Technology Stack
 
 ### Frontend
+
 - **React 19** - Latest React features
 - **TypeScript** - Type safety and better DX
 - **Vite** - Fast build tool and dev server
@@ -57,18 +63,21 @@ A modern, interactive French learning platform built with React, TypeScript, and
 - **React Hook Form + Zod** - Form handling and validation
 
 ### UI/UX
+
 - **shadcn/ui** - Modern, accessible components
 - **Tailwind CSS** - Utility-first styling
 - **Lucide React** - Beautiful icons
 - **CSS Variables** - Theme customization
 
 ### Backend
+
 - **Supabase** - Authentication, database, and storage
 - **PostgreSQL** - Relational database
 - **Row Level Security** - Data protection
 - **Real-time subscriptions** - Live updates
 
 ### Development Tools
+
 - **ESLint** - Code linting
 - **TypeScript** - Static type checking
 - **React Query DevTools** - Development debugging
@@ -94,6 +103,7 @@ src/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 - Supabase account
@@ -101,40 +111,47 @@ src/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd french-learning-app
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Add your Supabase credentials:
+
    ```env
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 
 4. **Set up the database**
+
    - Run the SQL schema in your Supabase SQL editor:
+
      ```bash
      # Copy the contents of supabase-schema.sql
      # Paste and execute in Supabase dashboard
      ```
-   
+
    - Optional: Add sample data:
      ```bash
      # Copy and execute sample-data.sql for test content
      ```
 
 5. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -147,6 +164,7 @@ src/
 ## 🎨 Design System
 
 ### Colors
+
 - **Primary:** Blue to Purple gradient
 - **Secondary:** Neutral grays
 - **Success:** Green (#22C55E)
@@ -154,6 +172,7 @@ src/
 - **Error:** Red (#EF4444)
 
 ### Components
+
 - Consistent spacing (4px base unit)
 - Accessible color contrasts
 - Responsive breakpoints
@@ -193,6 +212,7 @@ npm run lint         # Run ESLint
 ```
 
 ### Code Quality
+
 - TypeScript strict mode
 - ESLint configuration
 - Consistent code formatting
@@ -220,6 +240,7 @@ This project is licensed under the MIT License.
 ## 🎯 Roadmap
 
 ### Stage 3: Content & Learning Features
+
 - [ ] Lesson content system
 - [ ] Vocabulary learning tools
 - [ ] Assessment and testing
@@ -227,12 +248,14 @@ This project is licensed under the MIT License.
 - [ ] AI chat assistant
 
 ### Stage 4: Advanced Features
+
 - [ ] Pronunciation analysis
 - [ ] Social learning features
 - [ ] Offline capabilities
 - [ ] Mobile app (React Native)
 
 ### Stage 5: AI & Analytics
+
 - [ ] Personalized learning paths
 - [ ] Advanced analytics
 - [ ] ML-powered recommendations

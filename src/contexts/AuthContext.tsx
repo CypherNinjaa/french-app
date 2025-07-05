@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import type {
 	User,
@@ -37,6 +37,66 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
+	const createProfile = async (userId: string) => {
+		try {
+			const { data: userData } = await supabase.auth.getUser();
+			const user = userData.user;
+
+			if (!user) return;
+
+			const profileData = {
+				id: userId,
+				email: user.email || "",
+				full_name: user.user_metadata?.full_name || "",
+				learning_level: "beginner" as const,
+				preferences: {
+					notifications: true,
+					theme: "light",
+					language: "en",
+				},
+			};
+
+			const { data, error } = await supabase
+				.from("profiles")
+				.insert(profileData)
+				.select()
+				.single();
+
+			if (error) throw error;
+
+			if (data) {
+				setProfile(data);
+			}
+		} catch (error) {
+			console.error("Error creating profile:", error);
+			setError("Failed to create profile");
+		}
+	};
+
+	const fetchProfile = useCallback(async (userId: string) => {
+		try {
+			const { data, error } = await supabase
+				.from("profiles")
+				.select("*")
+				.eq("id", userId)
+				.single();
+
+			if (error && error.code !== "PGRST116") {
+				throw error;
+			}
+
+			if (data) {
+				setProfile(data);
+			} else {
+				// Profile doesn't exist, create one
+				await createProfile(userId);
+			}
+		} catch (error) {
+			console.error("Error fetching profile:", error);
+			setError("Failed to load profile");
+		}
+	}, []);
+
 	useEffect(() => {
 		// Get initial session
 		supabase.auth.getSession().then(({ data: { session } }) => {
@@ -65,28 +125,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		});
 
 		return () => subscription.unsubscribe();
-	}, []);
-
-	const fetchProfile = async (userId: string) => {
-		try {
-			const { data, error } = await supabase
-				.from("profiles")
-				.select("*")
-				.eq("id", userId)
-				.single();
-
-			if (error && error.code !== "PGRST116") {
-				throw error;
-			}
-
-			if (data) {
-				setProfile(data);
-			}
-		} catch (error) {
-			console.error("Error fetching profile:", error);
-			setError("Failed to load profile");
-		}
-	};
+	}, [fetchProfile]);
 
 	const signUp = async (email: string, password: string, fullName?: string) => {
 		try {

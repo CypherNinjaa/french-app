@@ -42,8 +42,13 @@ CREATE TABLE IF NOT EXISTS modules (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT,
+  level learning_level DEFAULT 'beginner',
   order_index INTEGER NOT NULL UNIQUE,
+  total_lessons INTEGER DEFAULT 0,
+  estimated_duration_minutes INTEGER DEFAULT 60,
+  is_premium BOOLEAN DEFAULT false,
   is_published BOOLEAN DEFAULT false,
+  image_url TEXT,
   pass_threshold INTEGER DEFAULT 65, -- percentage required to pass
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -54,9 +59,14 @@ CREATE TABLE IF NOT EXISTS lessons (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   module_id UUID REFERENCES modules(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
-  content JSONB, -- Rich text content, images, audio URLs
-  lesson_type TEXT DEFAULT 'conversation', -- conversation, situational, cultural, review
+  description TEXT,
+  content TEXT, -- Rich text content (markdown or HTML)
+  lesson_type TEXT DEFAULT 'conversation', -- conversation, grammar, vocabulary, pronunciation, culture
   order_index INTEGER NOT NULL,
+  estimated_duration_minutes INTEGER DEFAULT 15,
+  audio_url TEXT,
+  image_url TEXT,
+  key_phrases TEXT[] DEFAULT ARRAY[]::TEXT[],
   is_published BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
